@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FocusFlow</title>
+  <link rel="stylesheet" href="FF.css">
+</head>
+
+<body>
+
+<h1>FocusFlow</h1>
+<h2>Your Study Glow Up Starts Here!</h2>
+
+<h2>Stopwatch</h2>
+<div class="card">
+  <div id="sw" class="display">00:00:00</div>
+
+  <button id="swStartBtn">Start</button>
+  <button id="swStopBtn">Stop</button>
+  <button id="swLapBtn">Lap</button>
+  <button id="swResetBtn">Reset</button>
+
+  <h4>Laps</h4>
+  <ol id="laplist"></ol>
+</div>
+
+<h2>Pomodoro</h2>
+<div class="card">
+  <div id="pomo" class="display">25:00</div>
+
+  <button id="pStartBtn">Start</button>
+  <button id="pPauseBtn">Pause</button>
+  <button id="pSkipBtn">Skip</button>
+  <button id="pResetBtn">Reset</button>
+
+  <br><br>
+  Work: <input id="workMin" type="number" value="25">
+  Break: <input id="breakMin" type="number" value="5">
+  <br><br>
+  Auto Next: <input id="autoNext" type="checkbox" checked>
+</div>
+
+<!-- ---------------- HISTORY BUTTONS ---------------- -->
+<h2>Study History</h2>
+<button id="showHistoryBtn">Show History</button>
+<button id="clearHistoryBtn">Clear History</button>
+
+<script src="Dom.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+h1 {
+  text-align: center;
+  color: #f3f1f0;
+  text-shadow: 0 0 12px #7c5cff;
+  margin-bottom: 0;
+  font-weight: bold;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 48px;
+  animation: pop .6s ease;
+}
+
+h2 {
+  text-align: center;
+  color: #c0d4f7;
+  margin-top: 5px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 30px;
+  font-weight: normal;
+  animation: pop .6s ease .2s backwards;
+  font-display: block;
+}
+
+body {
+  font-family: sans-serif;
+  background: radial-gradient(circle at top, #3d00ff, #000814 60%, #000);
+  color: #e6eef8;
+  text-align: center;
+  padding: 30px;
+  min-height: 100vh;
+  animation: bgGlow 6s infinite alternate ease-in-out;
+}
+
+@keyframes bgGlow {
+  0% { filter: brightness(1); }
+  100% { filter: brightness(1.25); }
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 20px;
+  margin: 20px auto;
+  width: 330px;
+  border-radius: 14px;
+  box-shadow: 0 0 25px rgba(124, 92, 255, 0.35);
+  backdrop-filter: blur(4px);
+  animation: fadeIn .5s ease;
+  transition: transform .3s ease;
+}
+
+.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 40px rgba(124, 92, 255, 0.55);
+}
+
+.display {
+  font-size: 35px;
+  margin: 15px 0;
+  font-weight: bold;
+  text-shadow: 0 0 8px #7c5cff;
+  animation: pop .4s ease;
+}
+
+button {
+  padding: 8px 14px;
+  margin: 5px;
+  border: 0;
+  border-radius: 6px;
+  background: #7c5cff;
+  color: white;
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+
+button:hover {
+  background: #9a7cff;
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pop {
+  from { opacity: 0.7; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+input {
+  width: 55px;
+  background: #111;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+ol {
+  text-align: left;
+  max-height: 120px;
+  overflow: auto;
+}
