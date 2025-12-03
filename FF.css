@@ -19,7 +19,14 @@ h2 {
   animation: pop .6s ease .2s backwards;
   font-display: block;
 }
+footer{
+  margin-top: 40px;
+  font-size: 20px;
+  color: #aaa;
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
+}
 body {
   font-family: sans-serif;
   background: radial-gradient(circle at top, #3d00ff, #000814 60%, #000);
