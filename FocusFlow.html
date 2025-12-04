@@ -1,55 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>FocusFlow</title>
-  <link rel="stylesheet" href="FF.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusFlow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="FF.css"/>
 </head>
 
 <body>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
 
-<h1>FocusFlow</h1>
-<h2>Your Study Glow Up Starts Here!</h2>
+    <div class="app-container">
+        <div class="top-bar">
+            <select id="langSelect">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+            </select>
+        </div>
 
-<h2>Stopwatch</h2>
-<div class="card">
-  <div id="sw" class="display">00:00:00</div>
+        <header>
+            <h1 id="title">FocusFlow</h1>
+            <h2 id="subtitle">Your Study Glow Up Starts Here!</h2>
+            
+            <div id="clockWrap">
+                <span class="clock-label">CURRENT TIME</span>
+                <span id="liveClock">00:00:00</span>
+            </div>
+        </header>
 
-  <button id="swStartBtn">Start</button>
-  <button id="swStopBtn">Stop</button>
-  <button id="swLapBtn">Lap</button>
-  <button id="swResetBtn">Reset</button>
+        <div class="timer-row">
 
-  <h4>Laps</h4>
-  <ol id="laplist"></ol>
-</div>
+            <div class="card timer-card">
+                <div class="card-header">
+                    <h2 id="stopwatchTitle">Stopwatch</h2>
+                </div>
+                <div id="sw" class="display">00:00:00</div>
 
-<h2>Pomodoro</h2>
-<div class="card">
-  <div id="pomo" class="display">25:00</div>
+                <div class="btn-row">
+                    <button id="swStartBtn" class="btn-primary">Start</button>
+                    <button id="swStopBtn" class="btn-secondary">Stop</button>
+                    <button id="swLapBtn" class="btn-outline">Lap</button>
+                    <button id="swResetBtn" class="btn-danger">Reset</button>
+                </div>
 
-  <button id="pStartBtn">Start</button>
-  <button id="pPauseBtn">Pause</button>
-  <button id="pSkipBtn">Skip</button>
-  <button id="pResetBtn">Reset</button>
+                <div class="laps-container">
+                    <h4 id="lapsTitle">Laps</h4>
+                    <ol id="laplist"></ol>
+                </div>
+            </div>
 
-  <br><br>
-  Work: <input id="workMin" type="number" value="25">
-  Break: <input id="breakMin" type="number" value="5">
-  <br><br>
-  Auto Next: <input id="autoNext" type="checkbox" checked>
-</div>
+            <div class="card timer-card">
+                <div class="card-header">
+                    <h2 id="pomoTitle">Pomodoro</h2>
+                </div>
+                <div id="pomo" class="display">25:00</div>
 
+                <div class="btn-row">
+                    <button id="pStartBtn" class="btn-primary">Start</button>
+                    <button id="pPauseBtn" class="btn-secondary">Pause</button>
+                    <button id="pSkipBtn" class="btn-outline">Skip</button>
+                    <button id="pResetBtn" class="btn-danger">Reset</button>
+                </div>
 
-<h2>Study History</h2>
-<button id="showHistoryBtn">Show History</button>
-<button id="clearHistoryBtn">Clear History</button>
+                <div class="settings-box">
+                    <div class="input-group">
+                        <label id="workLabel">Work</label>
+                        <input id="workMin" type="number" value="25" />
+                    </div>
+                    <div class="input-group">
+                        <label id="breakLabel">Break</label>
+                        <input id="breakMin" type="number" value="5" />
+                    </div>
+                </div>
 
-<footer><b>Team: Ashnaa Seth, Suhrid Marwah<br>
-    An OJT Project <br> Core Features: Stopwatch, Pomodoro, Laps, Study History, Auto-Next Logic. Stay Tuned for More!!🧑‍💻</b>
-</footer>
+                <div class="toggle-row">
+                    <input id="autoNext" type="checkbox" checked />
+                    <label id="autoNextLabel" for="autoNext">Auto Next</label>
+                </div>
+            </div>
 
-<script src="Dom.js"></script>
+        </div>
 
+        <h2 id="historyTitle" class="section-title">Study History</h2>
+        <div class="card card-wide">
+            <div class="calendar-header">
+                <button id="prevMonthBtn" class="nav-btn">‹</button>
+                <div class="calendar-title">
+                    <span id="monthLabel"></span> <span id="yearLabel"></span>
+                </div>
+                <button id="nextMonthBtn" class="nav-btn">›</button>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-label">Today</div>
+                    <div class="stat-value" id="todayTotal">00:00:00</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">This Week</div>
+                    <div class="stat-value" id="weekTotal">00:00:00</div>
+                </div>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid"></div>
+
+            <div class="history-actions">
+                <button id="clearHistoryBtn" class="btn-text">Clear History</button>
+            </div>
+        </div>
+
+        <footer>
+            Team: Ashnaa Seth, Suhrid Marwah<br />
+            FocusFlow helps you study smarter with easy timers and progress tracking.<br />
+            Stay tuned for more exciting features 🧑‍💻👩‍💻
+        </footer>
+    </div>
+
+    <div id="modalBackdrop" class="modal-backdrop hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <div id="modalDateLabel">Sessions</div>
+                <button id="closeModalBtn">✕</button>
+            </div>
+            <div id="modalContent" class="modal-content"></div>
+        </div>
+    </div>
+
+    <script src="Dom.js"></script>
 </body>
 </html>
