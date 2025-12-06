@@ -61,7 +61,7 @@ function applyLanguage(lang) {
     document.getElementById("clearHistoryBtn").textContent = texts[lang].clearHistory;
 }
 
-document.getElementById("langSelect").onchange = function() {
+document.getElementById("langSelect").onchange = function () {
     const lang = this.value;
     applyLanguage(lang);
     localStorage.setItem("appLanguage", lang);
@@ -104,7 +104,6 @@ function updateClock() {
 
 /* ========== HISTORY ========== */
 function saveSession(type, duration) {
-    // Prevent saving 0 second sessions
     if (duration <= 0) return;
 
     const history = JSON.parse(localStorage.getItem("studyHistory") || "[]");
@@ -129,47 +128,64 @@ function saveHistoryArray(arr) {
     localStorage.setItem("studyHistory", JSON.stringify(arr));
 }
 
-/* ========== STOPWATCH ========== */
-let swTime = 0,
-    swRun = null;
+/* ===========================================================
+        ⭐ STOPWATCH (FULLY FIXED — WORKS IN BACKGROUND)
+=========================================================== */
+
+let swElapsed = 0;        // saved time
+let swStartTime = null;   // timestamp when started
 
 function swUpdate() {
-    byId("sw").textContent = formatHMS(swTime);
+    let elapsed = swElapsed;
+
+    if (swStartTime !== null) {
+        elapsed = swElapsed + Math.floor((Date.now() - swStartTime) / 1000);
+    }
+
+    byId("sw").textContent = formatHMS(elapsed);
 }
 
 function swStart() {
-    if (swRun) return;
-    swRun = setInterval(() => {
-        swTime++;
-        swUpdate();
-    }, 1000);
+    if (swStartTime !== null) return; // already running
+    swStartTime = Date.now();
 }
 
 function swStop() {
-    clearInterval(swRun);
-    swRun = null;
-    if (swTime > 0) saveSession("stopwatch", swTime);
+    if (swStartTime !== null) {
+        swElapsed += Math.floor((Date.now() - swStartTime) / 1000);
+        swStartTime = null;
+    }
+
+    if (swElapsed > 0) saveSession("stopwatch", swElapsed);
 }
 
 function swReset() {
-    if (swTime > 0) saveSession("stopwatch", swTime);
     swStop();
-    swTime = 0;
-    swUpdate();
+    swElapsed = 0;
     byId("laplist").innerHTML = "";
+    swUpdate();
 }
 
 function swLap() {
+    let elapsed = swElapsed;
+
+    if (swStartTime !== null) {
+        elapsed = swElapsed + Math.floor((Date.now() - swStartTime) / 1000);
+    }
+
     const li = document.createElement("li");
-    li.textContent = formatHMS(swTime);
+    li.textContent = formatHMS(elapsed);
     byId("laplist").prepend(li);
 }
 
-/* ========== POMODORO (UPDATED) ========== */
+// Regular display updater
+setInterval(swUpdate, 200);
+
+/* ========== POMODORO (YOUR SAME CODE) ========== */
 let pTime = 25 * 60,
     pRun = null,
     isBreak = false;
-let pTotalDuration = 25 * 60; // Helper to track total set time
+let pTotalDuration = 25 * 60;
 
 function updateP() {
     byId("pomo").textContent = `${pad2(Math.floor(pTime / 60))}:${pad2(pTime % 60)}`;
@@ -178,7 +194,6 @@ function updateP() {
 function setDuration() {
     const w = parseInt(byId("workMin").value);
     const b = parseInt(byId("breakMin").value);
-    // Set total duration based on mode
     pTotalDuration = (isBreak ? b : w) * 60;
     pTime = pTotalDuration;
 }
@@ -188,7 +203,6 @@ function toggleMode() {
     setDuration();
 }
 
-// Helper: Calculate elapsed time and save if it was Work mode
 function savePartialWork() {
     if (!isBreak && pTime < pTotalDuration) {
         const elapsed = pTotalDuration - pTime;
@@ -203,9 +217,7 @@ function pStart() {
     pRun = setInterval(() => {
         pTime--;
         if (pTime <= 0) {
-            // Timer Finished naturally
             if (!isBreak) {
-                // Save the full duration
                 saveSession("work", pTotalDuration);
             } else {
                 saveSession("break", pTotalDuration);
@@ -224,7 +236,7 @@ function pPause() {
 
 function pReset() {
     pPause();
-    savePartialWork(); // Save whatever time passed before resetting
+    savePartialWork();
     isBreak = false;
     setDuration();
     updateP();
@@ -232,14 +244,14 @@ function pReset() {
 
 function pSkip() {
     pPause();
-    savePartialWork(); // Save whatever time passed before skipping
+    savePartialWork();
     toggleMode();
     updateP();
 }
 
 /* ========== CALENDAR ========== */
-const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const WEEKDAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 let calYear, calMonth;
 
 function initCalendar() {
@@ -257,14 +269,8 @@ function initCalendar() {
 
 function changeMonth(delta) {
     calMonth += delta;
-    if (calMonth < 0) {
-        calMonth = 11;
-        calYear--;
-    }
-    if (calMonth > 11) {
-        calMonth = 0;
-        calYear++;
-    }
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    if (calMonth > 11) { calMonth = 0; calYear++; }
     renderCalendarGrid();
 }
 
@@ -332,9 +338,7 @@ function renderCalendarGrid() {
 }
 
 function openDayModal(dayKey, dateObj) {
-    const history = loadHistory().map((h, idx) => ({ ...h,
-            __index: idx
-        }))
+    const history = loadHistory().map((h, idx) => ({ ...h, __index: idx }))
         .sort((a, b) => (a.epoch || 0) - (b.epoch || 0));
     const sessions = history.filter(h => (h.dayKey || toDateKey(h.date)) === dayKey);
 
@@ -351,11 +355,11 @@ function openDayModal(dayKey, dateObj) {
         const header = document.createElement("div");
         header.className = "session-row";
         header.innerHTML = `
-      <div class="session-type">TYPE</div>
-      <div class="session-dur">DURATION</div>
-      <div class="session-date">TIME</div>
-      <div class="session-del">ACTION</div>
-    `;
+         <div class="session-type">TYPE</div>
+         <div class="session-dur">DURATION</div>
+         <div class="session-date">TIME</div>
+         <div class="session-del">ACTION</div>
+       `;
         box.appendChild(header);
 
         sessions.forEach(h => {
@@ -438,7 +442,8 @@ function updateTodayWeekTotals() {
     byId("todayTotal").textContent = formatHMS(todaySec);
     byId("weekTotal").textContent = formatHMS(weekSec);
 }
-/* ========== WIRING & INIT ========== */
+
+/* ========== WIRING ========== */
 byId("swStartBtn").onclick = swStart;
 byId("swStopBtn").onclick = swStop;
 byId("swLapBtn").onclick = swLap;
@@ -456,6 +461,7 @@ byId("clearHistoryBtn").onclick = () => {
     alert((localStorage.getItem("appLanguage") || "en") === "hi" ? "हिस्ट्री साफ कर दी गई!" : "History cleared!");
 };
 
+/* ========== INIT ========== */
 window.onload = () => {
     const savedLang = localStorage.getItem("appLanguage") || "en";
     byId("langSelect").value = savedLang;
@@ -467,7 +473,6 @@ window.onload = () => {
     updateClock();
     setInterval(updateClock, 1000);
 
-    // Initialize displays
     swUpdate();
     setDuration();
     updateP();
