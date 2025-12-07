@@ -461,7 +461,7 @@ byId("clearHistoryBtn").onclick = () => {
     alert((localStorage.getItem("appLanguage") || "en") === "hi" ? "हिस्ट्री साफ कर दी गई!" : "History cleared!");
 };
 
-/* ========== INIT ========== */
+
 window.onload = () => {
     const savedLang = localStorage.getItem("appLanguage") || "en";
     byId("langSelect").value = savedLang;

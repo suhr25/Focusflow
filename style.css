@@ -538,7 +538,6 @@ ol li:first-child {
     padding: 5px 10px;
 }
 
-/* ========== FOOTER ========== */
 footer {
     margin-top: 50px;
     font-size: 12px;
@@ -551,8 +550,6 @@ footer {
 footer:hover {
     opacity: 1;
 }
-
-/* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
     h1 { font-size: 40px; }
     .display { font-size: 48px; }
