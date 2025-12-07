@@ -1,4 +1,3 @@
-/* ========== LANGUAGE ========== */
 const texts = {
     en: {
         title: "FocusFlow",
@@ -39,24 +38,20 @@ const texts = {
 function applyLanguage(lang) {
     document.getElementById("title").textContent = texts[lang].title;
     document.getElementById("subtitle").textContent = texts[lang].subtitle;
-
     document.getElementById("stopwatchTitle").textContent = texts[lang].stopwatch;
     document.getElementById("swStartBtn").textContent = texts[lang].start;
     document.getElementById("swStopBtn").textContent = texts[lang].stop;
     document.getElementById("swLapBtn").textContent = texts[lang].lap;
     document.getElementById("swResetBtn").textContent = texts[lang].reset;
     document.getElementById("lapsTitle").textContent = texts[lang].laps;
-
     document.getElementById("pomoTitle").textContent = texts[lang].pomodoro;
     document.getElementById("pStartBtn").textContent = texts[lang].start;
     document.getElementById("pPauseBtn").textContent = texts[lang].stop;
     document.getElementById("pSkipBtn").textContent = texts[lang].skip;
     document.getElementById("pResetBtn").textContent = texts[lang].reset;
-
     document.getElementById("workLabel").textContent = texts[lang].work + ": ";
     document.getElementById("breakLabel").textContent = texts[lang].break + ": ";
     document.getElementById("autoNextLabel").textContent = texts[lang].autoNext;
-
     document.getElementById("historyTitle").textContent = texts[lang].history;
     document.getElementById("clearHistoryBtn").textContent = texts[lang].clearHistory;
 }
@@ -67,7 +62,6 @@ document.getElementById("langSelect").onchange = function () {
     localStorage.setItem("appLanguage", lang);
 };
 
-/* ========== UTIL ========== */
 const byId = (id) => document.getElementById(id);
 const pad2 = (n) => String(n).padStart(2, '0');
 
@@ -86,14 +80,13 @@ function toDateKey(date) {
 
 function startOfWeek(d) {
     const date = new Date(d);
-    const day = date.getDay(); // 0 Sun..6 Sat
-    const diff = date.getDate() - day + 1; // Monday
+    const day = date.getDay();
+    const diff = date.getDate() - day + 1;
     const monday = new Date(date.setDate(diff));
     monday.setHours(0, 0, 0, 0);
     return monday;
 }
 
-/* ========== LIVE CLOCK ========== */
 function updateClock() {
     const now = new Date();
     const hh = pad2(now.getHours());
@@ -102,10 +95,8 @@ function updateClock() {
     byId("liveClock").textContent = `${hh}:${mm}:${ss}`;
 }
 
-/* ========== HISTORY ========== */
 function saveSession(type, duration) {
     if (duration <= 0) return;
-
     const history = JSON.parse(localStorage.getItem("studyHistory") || "[]");
     const now = new Date();
     history.push({
@@ -128,25 +119,19 @@ function saveHistoryArray(arr) {
     localStorage.setItem("studyHistory", JSON.stringify(arr));
 }
 
-/* ===========================================================
-        ⭐ STOPWATCH (FULLY FIXED — WORKS IN BACKGROUND)
-=========================================================== */
-
-let swElapsed = 0;        // saved time
-let swStartTime = null;   // timestamp when started
+let swElapsed = 0;
+let swStartTime = null;
 
 function swUpdate() {
     let elapsed = swElapsed;
-
     if (swStartTime !== null) {
         elapsed = swElapsed + Math.floor((Date.now() - swStartTime) / 1000);
     }
-
     byId("sw").textContent = formatHMS(elapsed);
 }
 
 function swStart() {
-    if (swStartTime !== null) return; // already running
+    if (swStartTime !== null) return;
     swStartTime = Date.now();
 }
 
@@ -155,7 +140,6 @@ function swStop() {
         swElapsed += Math.floor((Date.now() - swStartTime) / 1000);
         swStartTime = null;
     }
-
     if (swElapsed > 0) saveSession("stopwatch", swElapsed);
 }
 
@@ -168,20 +152,16 @@ function swReset() {
 
 function swLap() {
     let elapsed = swElapsed;
-
     if (swStartTime !== null) {
         elapsed = swElapsed + Math.floor((Date.now() - swStartTime) / 1000);
     }
-
     const li = document.createElement("li");
     li.textContent = formatHMS(elapsed);
     byId("laplist").prepend(li);
 }
 
-// Regular display updater
 setInterval(swUpdate, 200);
 
-/* ========== POMODORO (YOUR SAME CODE) ========== */
 let pTime = 25 * 60,
     pRun = null,
     isBreak = false;
@@ -249,7 +229,6 @@ function pSkip() {
     updateP();
 }
 
-/* ========== CALENDAR ========== */
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const WEEKDAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 let calYear, calMonth;
@@ -277,43 +256,34 @@ function changeMonth(delta) {
 function renderCalendarGrid() {
     byId("monthLabel").textContent = MONTHS[calMonth];
     byId("yearLabel").textContent = calYear;
-
     const grid = byId("calendarGrid");
     grid.innerHTML = "";
-
     WEEKDAYS.forEach(d => {
         const el = document.createElement("div");
         el.className = "weekday";
         el.textContent = d;
         grid.appendChild(el);
     });
-
     const first = new Date(calYear, calMonth, 1);
     const last = new Date(calYear, calMonth + 1, 0);
     const daysInMonth = last.getDate();
-
     let startOffset = first.getDay();
     if (startOffset === 0) startOffset = 7;
     const blanks = startOffset - 1;
-
     for (let i = 0; i < blanks; i++) {
         const blank = document.createElement("div");
         blank.className = "day day-blank";
         blank.style.visibility = "hidden";
         grid.appendChild(blank);
     }
-
     const todayKey = toDateKey(new Date());
     const history = loadHistory();
-
     for (let d = 1; d <= daysInMonth; d++) {
         const cell = document.createElement("div");
         cell.className = "day";
-
         const thisDate = new Date(calYear, calMonth, d);
         const key = toDateKey(thisDate);
         if (key === todayKey) cell.classList.add("today");
-
         let focusedSec = 0;
         history.forEach(h => {
             const dk = h.dayKey || toDateKey(h.date);
@@ -321,15 +291,12 @@ function renderCalendarGrid() {
                 focusedSec += (h.duration || 0);
             }
         });
-
         const dateEl = document.createElement("div");
         dateEl.className = "date";
         dateEl.textContent = d;
-
         const sumEl = document.createElement("div");
         sumEl.className = "sum";
         sumEl.textContent = focusedSec > 0 ? `Total: ${formatHMS(focusedSec)}` : "—";
-
         cell.appendChild(dateEl);
         cell.appendChild(sumEl);
         cell.onclick = () => openDayModal(key, thisDate);
@@ -341,11 +308,9 @@ function openDayModal(dayKey, dateObj) {
     const history = loadHistory().map((h, idx) => ({ ...h, __index: idx }))
         .sort((a, b) => (a.epoch || 0) - (b.epoch || 0));
     const sessions = history.filter(h => (h.dayKey || toDateKey(h.date)) === dayKey);
-
     byId("modalDateLabel").textContent = `${dayKey} — ${sessions.length} session${sessions.length !== 1 ? "s" : ""}`;
     const box = byId("modalContent");
     box.innerHTML = "";
-
     if (!sessions.length) {
         const empty = document.createElement("div");
         empty.style.padding = "14px";
@@ -361,32 +326,26 @@ function openDayModal(dayKey, dateObj) {
          <div class="session-del">ACTION</div>
        `;
         box.appendChild(header);
-
         sessions.forEach(h => {
             const row = document.createElement("div");
             row.className = "session-row";
-
             const type = document.createElement("div");
             type.className = "session-type";
             type.textContent = h.type.toUpperCase();
-
             const dur = document.createElement("div");
             dur.className = "session-dur";
             const sec = h.duration || 0;
             dur.textContent = `${formatHMS(sec)}  (${sec}s)`;
-
             const time = document.createElement("div");
             time.className = "session-date";
             const d = h.epoch ? new Date(h.epoch) : new Date(h.date);
             time.textContent = d.toLocaleTimeString();
-
             const del = document.createElement("div");
             del.className = "session-del";
             const btn = document.createElement("button");
             btn.textContent = "Delete";
             btn.onclick = () => deleteHistoryEntry(h.__index, dayKey, dateObj);
             del.appendChild(btn);
-
             row.appendChild(type);
             row.appendChild(dur);
             row.appendChild(time);
@@ -394,7 +353,6 @@ function openDayModal(dayKey, dateObj) {
             box.appendChild(row);
         });
     }
-
     byId("modalBackdrop").classList.remove("hidden");
 }
 
@@ -417,7 +375,6 @@ function updateTodayWeekTotals() {
     const history = loadHistory();
     const now = new Date();
     const todayKey = toDateKey(now);
-
     let todaySec = 0;
     history.forEach(h => {
         const dk = h.dayKey || toDateKey(h.date);
@@ -425,12 +382,10 @@ function updateTodayWeekTotals() {
             todaySec += (h.duration || 0);
         }
     });
-
     const monday = startOfWeek(now);
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
     sunday.setHours(23, 59, 59, 999);
-
     let weekSec = 0;
     history.forEach(h => {
         const t = h.epoch ? new Date(h.epoch) : new Date(h.date);
@@ -438,12 +393,10 @@ function updateTodayWeekTotals() {
             weekSec += (h.duration || 0);
         }
     });
-
     byId("todayTotal").textContent = formatHMS(todaySec);
     byId("weekTotal").textContent = formatHMS(weekSec);
 }
 
-/* ========== WIRING ========== */
 byId("swStartBtn").onclick = swStart;
 byId("swStopBtn").onclick = swStop;
 byId("swLapBtn").onclick = swLap;
@@ -461,18 +414,14 @@ byId("clearHistoryBtn").onclick = () => {
     alert((localStorage.getItem("appLanguage") || "en") === "hi" ? "हिस्ट्री साफ कर दी गई!" : "History cleared!");
 };
 
-
 window.onload = () => {
     const savedLang = localStorage.getItem("appLanguage") || "en";
     byId("langSelect").value = savedLang;
     applyLanguage(savedLang);
-
     initCalendar();
     updateTodayWeekTotals();
-
     updateClock();
     setInterval(updateClock, 1000);
-
     swUpdate();
     setDuration();
     updateP();
